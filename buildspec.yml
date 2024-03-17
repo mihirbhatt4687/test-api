@@ -22,6 +22,7 @@ phases:
       - sudo sed -i -e "s/APP_DB_HOST/$APP_DB_HOST/g" .env
       - export APP_DB=$SECRETS | jq -r .APP_DB
       - sudo sed -i -e "s/APP_DB/$APP_DB/g" .env
+      - cat .env
       
 
 artifacts:
