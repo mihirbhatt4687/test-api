@@ -11,9 +11,18 @@ phases:
   build:
     commands:
       - echo 'Getting secret..'
-      - aws secretsmanager get-secret-value --secret-id test-secret | jq --raw-output '.SecretString' | jq -r .test
-      - export APP_DB_PASS=$(aws secretsmanager get-secret-value --secret-id test-secret | jq --raw-output '.SecretString' | jq -r .test)
-      - sudo sed -i -e "s/PLACEHOLDER_APP_DB_PASSWORD/$APP_DB_PASS/g" .env
+      - mv .env.live .env
+      #- aws secretsmanager get-secret-value --secret-id test-secret | jq --raw-output '.SecretString' | jq -r .test
+      - export SECRETS=$(aws secretsmanager get-secret-value --secret-id test-secret-1 | jq --raw-output '.SecretString')
+      - export APP_DB_USERNAME=$SECRETS | jq -r .APP_DB_USERNAME
+      - sudo sed -i -e "s/APP_DB_USERNAME/$APP_DB_USERNAME/g" .env
+      - export APP_DB_PASSWORD=$SECRETS | jq -r .APP_DB_PASSWORD
+      - sudo sed -i -e "s/APP_DB_PASSWORD/$APP_DB_PASSWORD/g" .env
+      - export APP_DB_HOST=$SECRETS | jq -r .APP_DB_HOST
+      - sudo sed -i -e "s/APP_DB_HOST/$APP_DB_HOST/g" .env
+      - export APP_DB=$SECRETS | jq -r .APP_DB
+      - sudo sed -i -e "s/APP_DB/$APP_DB/g" .env
+      
 
 artifacts:
   files:
