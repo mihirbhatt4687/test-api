@@ -12,15 +12,15 @@ phases:
     commands:
       - echo 'Getting secret..'
       - mv .env.live .env
-      #- aws secretsmanager get-secret-value --secret-id test-secret | jq --raw-output '.SecretString' | jq -r .test
       - export SECRETS=$(aws secretsmanager get-secret-value --secret-id test-secret-1 | jq --raw-output '.SecretString')
-      - export APP_DB_USERNAME=$SECRETS | jq -r .APP_DB_USERNAME
+      - echo $SECRETS
+      - export APP_DB_USERNAME=$(echo $SECRETS | jq -r .APP_DB_USERNAME)
       - sudo sed -i -e "s/APP_DB_USERNAME/$APP_DB_USERNAME/g" .env
-      - export APP_DB_PASSWORD=$SECRETS | jq -r .APP_DB_PASSWORD
+      - export APP_DB_PASSWORD=$(echo $SECRETS | jq -r .APP_DB_PASSWORD)
       - sudo sed -i -e "s/APP_DB_PASSWORD/$APP_DB_PASSWORD/g" .env
-      - export APP_DB_HOST=$SECRETS | jq -r .APP_DB_HOST
+      - export APP_DB_HOST=$(echo $SECRETS | jq -r .APP_DB_HOST)
       - sudo sed -i -e "s/APP_DB_HOST/$APP_DB_HOST/g" .env
-      - export APP_DB=$SECRETS | jq -r .APP_DB
+      - export APP_DB=$(echo $SECRETS | jq -r .APP_DB)
       - sudo sed -i -e "s/APP_DB/$APP_DB/g" .env
       - cat .env
       
