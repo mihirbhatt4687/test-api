@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+  pre_build:
+    commands:
+      - ls -al
+      - echo This is test pre build commands...
+  build:
+    commands:
+      - echo 'Getting secret..'
+      - aws secretsmanager get-secret-value --secret-id test-secret | jq --raw-output '.SecretString' | jq -r .test
+      - export APP_DB_PASS=$(aws secretsmanager get-secret-value --secret-id test-secret | jq --raw-output '.SecretString' | jq -r .test)
+      - sudo sed -i -e "s/PLACEHOLDER_APP_DB_PASSWORD/$APP_DB_PASS/g" .env
+
+artifacts:
+  files:
+    - '**/*'
