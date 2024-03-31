@@ -20,8 +20,6 @@ phases:
       - sudo sed -i -e "s/APP_DB_PASSWORD/$APP_DB_PASSWORD/g" .env
       - export APP_DB_HOST=$(echo $SECRETS | jq -r .APP_DB_HOST)
       - sudo sed -i -e "s/APP_DB_HOST/$APP_DB_HOST/g" .env
-      - export APP_DB=$(echo $SECRETS | jq -r .APP_DB)
-      - sudo sed -i -e "s/APP_DB/$APP_DB/g" .env
       - cat .env
       
 
